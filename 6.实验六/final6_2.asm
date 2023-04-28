@@ -1,0 +1,30 @@
+;8254片选接IOY0
+COUNTER0 EQU 0600H;计数器0
+COUNTER1 EQU 0602H;计数器1
+COUNTER2 EQU 0604H;计数器2
+CONTROL8254 EQU 0606H;控制寄存器
+
+CODES SEGMENT
+    ASSUME CS:CODES
+START:
+    MOV AX,00H
+    MOV DS,AX
+    
+    MOV DX,CONTROL8254
+    MOV AL,76H;8254计数器1工作在方式3，产生方波信号
+    OUT DX,AL
+    
+    MOV DX,COUNTER1
+    ;写入计数初值4800H，接18.432KHZ时钟源，这样方波周期则为1s
+    ;计数初值=定时时间/时钟脉冲周期
+    MOV AL,00H
+    OUT DX,AL
+    MOV AL,48H
+    OUT DX,AL
+AA1:
+	JMP AA1
+  
+    MOV AH,4CH
+    INT 21H
+CODES ENDS
+    END START
